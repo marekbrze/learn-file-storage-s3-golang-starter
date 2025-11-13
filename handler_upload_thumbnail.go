@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
@@ -58,7 +60,16 @@ func (cfg *apiConfig) handlerUploadThumbnail(w http.ResponseWriter, r *http.Requ
 		respondWithError(w, http.StatusUnauthorized, "Unauthorized", err)
 		return
 	}
-	fileName := fmt.Sprintf("%s.%s", videoFromDB.ID.String(), fileExtension)
+
+	key := make([]byte, 32)
+	_, err = rand.Read(key)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Unable to parse form file", err)
+		return
+	}
+	encodedString := base64.RawURLEncoding.EncodeToString(key)
+
+	fileName := fmt.Sprintf("%s.%s", encodedString, fileExtension)
 	thumbnailPath := filepath.Join(cfg.assetsRoot, fileName)
 	osFile, err := os.Create(thumbnailPath)
 	if err != nil {
