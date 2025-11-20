@@ -75,6 +75,11 @@ func main() {
 		log.Fatal("S3_CF_DISTRO environment variable is not set")
 	}
 
+	s3CfDistributionDomain := os.Getenv("S3_DISTRIBUTION_DOMAIN")
+	if s3CfDistribution == "" {
+		log.Fatal("S3_CF_DISTRO environment variable is not set")
+	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("PORT environment variable is not set")
@@ -94,7 +99,7 @@ func main() {
 		assetsRoot:       assetsRoot,
 		s3Bucket:         s3Bucket,
 		s3Region:         s3Region,
-		s3CfDistribution: s3CfDistribution,
+		s3CfDistribution: s3CfDistributionDomain,
 		port:             port,
 		s3Client:         myS3Client,
 	}
